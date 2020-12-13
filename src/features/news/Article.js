@@ -53,7 +53,11 @@ export const Article = ({ children, id }) => {
         >
           <time>{isLoadingData ? 'Loading...' : secToString(articleData.time)}</time>
         </ArticleParagraph>
-        <Link to={`/news/${articleData.id}`}>Go to this news</Link>
+        {isLoadingData ?
+          null
+        :
+          <Link to={`/news/${articleData.id}`}>Go to this news</Link>
+        }
         {children}
       </footer>
     </article>
