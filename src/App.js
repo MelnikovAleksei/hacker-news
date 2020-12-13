@@ -1,56 +1,80 @@
 import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import {
+  Switch,
+  Route
+} from 'react-router-dom';
+
+import { Header } from './components/Header';
+import { Footer } from './components/Footer';
+import { PageNotFound } from './components/PageNotFound';
+import { NewsList } from './features/news/NewsList';
+import { SingleNewsPage } from './features/news/SingleNewsPage';
+import { UpdateNewsButton } from './features/news/UpdateNewsButton';
+
+import { UPDATE_TIME } from './utils/constansts/constants';
+
+import { useDispatch, useSelector } from 'react-redux';
+
+import {
+  fetchNewsIds,
+  selectNewsIds,
+  selectNewsIdsError,
+  selectNewsIdsStatus
+} from './features/news/newsSlice';
 
 function App() {
+
+  const dispatch = useDispatch();
+
+  const newsIds = useSelector(selectNewsIds);
+  const newsIdsStatus = useSelector(selectNewsIdsStatus);
+  const newsIdsError = useSelector(selectNewsIdsError);
+
+  React.useEffect(() => {
+    const updateIds = setTimeout(() => {
+      dispatch(fetchNewsIds());
+    }, UPDATE_TIME)
+
+    if (newsIdsStatus === 'idle') {
+      dispatch(fetchNewsIds());
+    }
+
+    return () => {
+      clearTimeout(updateIds);
+    }
+  }, [dispatch, newsIdsStatus])
+
+  function handleClickUpdateButton() {
+    dispatch(fetchNewsIds());
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+      <Header />
+      <Switch>
+        <Route
+          exact
+          path="/"
+          render={() => (
+            <main>
+              <section>
+                <UpdateNewsButton
+                  text="Update the list"
+                  isLoading={newsIdsStatus}
+                  onClick={handleClickUpdateButton}
+                />
+                {newsIdsError && <p>newsIdsError</p>}
+                <NewsList data={newsIds}/>
+              </section>
+            </main>
+          )}
+        />
+        <Route exact path="/news/:newsId" component={SingleNewsPage}/>
+        <Route path="*">
+          <PageNotFound />
+        </Route>
+      </Switch>
+      <Footer />
     </div>
   );
 }
