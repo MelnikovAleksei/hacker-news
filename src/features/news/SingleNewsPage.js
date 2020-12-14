@@ -70,7 +70,7 @@ export const SingleNewsPage = ({ match }) => {
         />
         <ArticleParagraph
           isLoadingData={isLoadingData}
-          text={articleData.kids && articleData.descendants }
+          text={articleData.kids && articleData.descendants > 0 ? articleData.descendants : "0" }
         >
           {` comment('s)`}
         </ArticleParagraph>
