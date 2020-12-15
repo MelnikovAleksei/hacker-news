@@ -54,7 +54,7 @@ function App() {
       <Switch>
         <Route
           exact
-          path="/hacker-news/"
+          path="/hacker-news"
           render={() => (
             <main>
               <section>

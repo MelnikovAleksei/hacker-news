@@ -74,7 +74,7 @@ export const SingleNewsPage = ({ match }) => {
         >
           {` comment('s)`}
         </ArticleParagraph>
-        <Link to="/hacker-news/">Back to news list</Link>
+        <Link to="/hacker-news">Back to news list</Link>
         {articleData.kids &&
           <CommentsList data={articleData.kids}/>
         }
